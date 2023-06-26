@@ -111,7 +111,7 @@ def test_load_files_all_handle_api_error(mock_storage_client):
         credentials_path="path/to/creds.json",
     )
 
-    char_names = ["test_char1", "test_char2"]
-    result = downloader.load_files_all(char_names)
+    keys = ["test_char1", "test_char2"]
+    result = downloader.load_files_all(keys)
 
     assert all(len(files) == 0 for files in result.values())
