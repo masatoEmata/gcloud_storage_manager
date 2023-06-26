@@ -2,8 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from gcloud_storage_manager.base import FileType
-from gcloud_storage_manager.upload import StorageFileUploader, UploadResult
+from gcloud_storage_manager import FileType, StorageFileUploader, UploadResult
 
 
 def test_upload_result():

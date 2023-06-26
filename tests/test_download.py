@@ -3,8 +3,7 @@ from unittest.mock import Mock, patch
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud import storage
 
-from gcloud_storage_manager.base import FileType
-from gcloud_storage_manager.download import StorageFileDownloader
+from gcloud_storage_manager import FileType, StorageFileDownloader
 
 
 @patch("google.cloud.storage.Client")
