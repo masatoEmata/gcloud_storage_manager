@@ -4,7 +4,7 @@ from typing import Dict, List
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud import storage
 
-from gcloud_storage_manager.base import BaseStorageFileHandler
+from gcloud_storage_manager.base import BaseStorageFileHandler, FileType
 from gcloud_storage_manager.std_logging import logging
 
 
@@ -23,9 +23,18 @@ class StorageFileDownloader(BaseStorageFileHandler):
     files = downloader.load_files_by_key("test_key")
     """
 
-    def __init__(self, max_workers=5, **kwargs):
-        super().__init__(**kwargs)
-        self.max_workers = max_workers
+    def __init__(
+        self,
+        bucket_name: str,
+        dir_name: str,
+        dir_name_child: str,
+        file_type: FileType,
+        credentials_path: str,
+    ):
+        super().__init__(
+            bucket_name, dir_name, dir_name_child, file_type, credentials_path
+        )
+        self.max_workers = 5
 
     def load_files_all(self, keys: List[str]) -> Dict[str, List[bytes]]:
         """

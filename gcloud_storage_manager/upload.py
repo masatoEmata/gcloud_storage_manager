@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-from gcloud_storage_manager.base import BaseStorageFileHandler
+from gcloud_storage_manager.base import BaseStorageFileHandler, FileType
 from gcloud_storage_manager.std_logging import logging
 
 
@@ -33,9 +33,18 @@ class StorageFileUploader(BaseStorageFileHandler):
     result = uploader.upload_files(validated_files)
     """
 
-    def __init__(self, max_workers=5, **kwargs):
-        super().__init__(**kwargs)
-        self.max_workers = max_workers
+    def __init__(
+        self,
+        bucket_name: str,
+        dir_name: str,
+        dir_name_child: str,
+        file_type: FileType,
+        credentials_path: str,
+    ):
+        super().__init__(
+            bucket_name, dir_name, dir_name_child, file_type, credentials_path
+        )
+        self.max_workers = 5
 
     def upload_files(
         self,
