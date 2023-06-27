@@ -1,7 +1,6 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from typing import List, Tuple
-
-from tqdm import tqdm
 
 from gcloud_storage_manager.base import BaseStorageFileHandler
 from gcloud_storage_manager.std_logging import logging
@@ -34,6 +33,10 @@ class StorageFileUploader(BaseStorageFileHandler):
     result = uploader.upload_files(validated_files)
     """
 
+    def __init__(self, max_workers=5, **kwargs):
+        super().__init__(**kwargs)
+        self.max_workers = max_workers
+
     def upload_files(
         self,
         validated_files: List[Tuple[str, bytes]],  # (file_path, file_content)
@@ -44,14 +47,26 @@ class StorageFileUploader(BaseStorageFileHandler):
         success_count = 0
         failure_count = 0
         failed_keys: List[str] = []
-        with tqdm(total=len(validated_files), desc="Uploading", ncols=80) as pbar:
-            for file_path, file_content in validated_files:
-                if self._upload_file(file_path, file_content, overwrite):
-                    success_count += 1
-                else:
-                    failed_keys.append(file_path)
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            futures_to_file_paths = {
+                executor.submit(
+                    self._upload_file, file_path, file_content, overwrite
+                ): file_path
+                for file_path, file_content in validated_files
+            }
+            for future in as_completed(futures_to_file_paths):
+                file_path = futures_to_file_paths[future]
+                try:
+                    success = future.result()
+                    if success:
+                        success_count += 1
+                    else:
+                        failure_count += 1
+                        failed_keys.append(file_path)
+                except Exception as e:
                     failure_count += 1
-                pbar.update()
+                    failed_keys.append(file_path)
+                    logging.info(f"Error uploading '{file_path}': {e}")
 
         logging.info("End of uploading files to cloud storage")
 

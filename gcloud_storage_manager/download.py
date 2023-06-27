@@ -1,8 +1,8 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List
 
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud import storage
-from tqdm import tqdm
 
 from gcloud_storage_manager.base import BaseStorageFileHandler
 from gcloud_storage_manager.std_logging import logging
@@ -23,6 +23,10 @@ class StorageFileDownloader(BaseStorageFileHandler):
     files = downloader.load_files_by_key("test_key")
     """
 
+    def __init__(self, max_workers=5, **kwargs):
+        super().__init__(**kwargs)
+        self.max_workers = max_workers
+
     def load_files_all(self, keys: List[str]) -> Dict[str, List[bytes]]:
         """
         Load files from cloud storage.
@@ -34,8 +38,12 @@ class StorageFileDownloader(BaseStorageFileHandler):
         results: Dict[str, List[bytes]] = {}
 
         logging.info("Start of getting files from cloud storage")
-        with tqdm(total=len(keys), desc="Uploading", ncols=80) as pbar:
-            for key in keys:
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            futures_to_keys = {
+                executor.submit(self.load_files_by_key, key): key for key in keys
+            }
+            for future in as_completed(futures_to_keys):
+                key = futures_to_keys[future]
                 try:
                     results[key] = self.load_files_by_key(key)
                 except GoogleAPIError as e:
@@ -44,7 +52,6 @@ class StorageFileDownloader(BaseStorageFileHandler):
                         f"data for '{key}': {e}"
                     )
                     results[key] = []
-                pbar.update()
 
         logging.info("Finish of getting files from cloud storage")
 
