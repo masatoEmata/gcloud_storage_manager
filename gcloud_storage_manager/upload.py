@@ -40,11 +40,12 @@ class StorageFileUploader(BaseStorageFileHandler):
         dir_name_child: str,
         file_type: FileType,
         credentials_path: str,
+        max_workers=5,
     ):
         super().__init__(
             bucket_name, dir_name, dir_name_child, file_type, credentials_path
         )
-        self.max_workers = 5
+        self.max_workers = max_workers
 
     def upload_files(
         self,
