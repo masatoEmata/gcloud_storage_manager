@@ -43,11 +43,11 @@ def test_upload_file(mock_blob, mock_bucket, mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
-    uploader._upload_file("test_key", b"test bytes", False)
+    uploader._upload_file("test_key.svg", b"test bytes", False)
 
     mock_bucket.blob.assert_called_once_with("test_dir/test_child_dir/test_key.svg")
     mock_blob.upload_from_string.assert_called_once_with(
@@ -69,11 +69,14 @@ def test_upload_files(mock_storage_client, mock_upload_file):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
-    validated_files = [("test_key1", b"test bytes1"), ("test_key2", b"test bytes2")]
+    validated_files = [
+        ("test_key1.svg", b"test bytes1"),
+        ("test_key2.svg", b"test bytes2"),
+    ]
     result = uploader.upload_files(validated_files, False)
 
     assert mock_upload_file.call_count == len(validated_files)

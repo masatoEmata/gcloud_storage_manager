@@ -27,7 +27,7 @@ class StorageFileUploader(BaseStorageFileHandler):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
     result = uploader.upload_files(validated_files)
@@ -94,10 +94,11 @@ class StorageFileUploader(BaseStorageFileHandler):
         overwrite = False
         uploader._upload_file(file_path, file_content, overwrite)
         """
+        if not self._file_match(file_path):
+            return False
+        full_file_path = f"{self.storage_base_dir}/{file_path}"
+
         try:
-            full_file_path = (
-                f"{self.storage_base_dir}/{file_path}{self.file_type.extension}"
-            )
             blob = self.bucket.blob(full_file_path)
             if blob.exists() and not overwrite:
                 return False

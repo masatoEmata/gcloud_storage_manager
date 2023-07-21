@@ -14,7 +14,7 @@ def test__file_match(mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
@@ -38,7 +38,7 @@ def test_load_files_by_key(mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
@@ -64,7 +64,7 @@ def test_load_files_all(mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
@@ -83,7 +83,7 @@ def test__file_match_failed(mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 
@@ -107,7 +107,7 @@ def test_load_files_all_handle_api_error(mock_storage_client):
         bucket_name="test_bucket",
         dir_name="test_dir",
         dir_name_child="test_child_dir",
-        file_type=FileType("SVG", ".svg", "image/svg+xml"),
+        file_type=FileType(".svg", "image/svg+xml"),
         credentials_path="path/to/creds.json",
     )
 

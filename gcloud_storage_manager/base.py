@@ -8,12 +8,16 @@ class FileType(NamedTuple):
     File type information.
 
     e.g.
-    FileType("SVG", ".svg", "image/svg+xml")
+    FileType(".svg", "image/svg+xml")
     """
 
-    label: str
     extension: str
     content_type: str
+
+    @property
+    def label(self) -> str:
+        # e.g. ".svg" -> "SVG"
+        return self.extension[1:].upper()
 
 
 class BaseStorageFileHandler:
