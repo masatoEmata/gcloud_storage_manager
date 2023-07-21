@@ -34,7 +34,7 @@ uploader = StorageFileUploader(
     credentials_path="path/to/creds.json",
 )
 
-uploader._upload_file("test_key", b"test bytes", False)
+uploader._upload_file("test_key.svg", b"test bytes", False)
 ```
 
 # prerequest

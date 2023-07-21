@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="gcloud-storage-manager",
-    version="0.1.0",
+    version="0.1.1",
     description="A package to manage Google Cloud Storage",
     packages=find_packages(),
     install_requires=[],
