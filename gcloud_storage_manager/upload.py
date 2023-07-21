@@ -95,6 +95,7 @@ class StorageFileUploader(BaseStorageFileHandler):
         uploader._upload_file(file_path, file_content, overwrite)
         """
         if not self._file_match(file_path):
+            logging.warning(f"Invalid file extension: {file_path}")
             return False
         full_file_path = f"{self.storage_base_dir}/{file_path}"
 
@@ -107,5 +108,5 @@ class StorageFileUploader(BaseStorageFileHandler):
             )
             return True
         except Exception as e:
-            logging.info(f"Error uploading '{full_file_path}': {e}")
+            logging.warning(f"Error uploading '{full_file_path}': {e}")
             return False

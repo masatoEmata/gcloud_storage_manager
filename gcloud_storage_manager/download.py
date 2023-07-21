@@ -57,7 +57,7 @@ class StorageFileDownloader(BaseStorageFileHandler):
                 try:
                     results[key] = self.load_files_by_key(key)
                 except GoogleAPIError as e:
-                    logging.info(
+                    logging.warning(
                         f"Failed to download {self.file_type.label} "
                         f"data for '{key}': {e}"
                     )
@@ -81,6 +81,8 @@ class StorageFileDownloader(BaseStorageFileHandler):
         for blob_ in blobs:
             blob: storage.Blob = blob_
             file_name: str = blob.name
-            if self._file_match(file_name):
-                files.append(blob.download_as_bytes())
+            if not self._file_match(file_name):
+                # add warn log
+                logging.warning(f"Invalid file extension: {file_name}")
+            files.append(blob.download_as_bytes())
         return files
